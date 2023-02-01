@@ -17,11 +17,13 @@ GROUP BY album.name;
 
 
 -- все исполнители, которые не выпустили альбомы в 2020 году;
-SELECT singer.name FROM singer
+SELECT DISTINCT singer.name FROM singer
 JOIN album_singer ON singer.singer_id = album_singer.singer_id
 JOIN album ON album_singer.album_id = album.album_id
-WHERE album.release_year != 2020;
-
+WHERE album.name NOT IN (
+	SELECT album.name FROM album
+	WHERE album.release_year = 2020
+);	
 
 -- названия сборников, в которых присутствует конкретный исполнитель (выберите сами);
 SELECT digest.name FROM digest
@@ -39,7 +41,7 @@ JOIN album_singer ON album.album_id = album_singer.album_id
 JOIN singer ON album_singer.singer_id = singer.singer_id
 JOIN genre_singer ON singer.singer_id = genre_singer.singer_id
 JOIN genre ON genre_singer.genre_id = genre.genre_id
-GROUP BY album.name
+GROUP BY album.name, singer.name
 HAVING COUNT(*) > 1;
 
 
